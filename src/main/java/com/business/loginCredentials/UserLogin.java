@@ -1,4 +1,4 @@
-package com.business.loginCredentials;
+package com.business.logincredentials;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +24,4 @@ public void setUserPassword(String userPassword) {
 public String toString() {
 	return "UserLogin [userEmail=" + userEmail + ", userPassword=" + userPassword + "]";
 }
-
-
-
 }
