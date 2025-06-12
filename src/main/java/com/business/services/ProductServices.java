@@ -20,20 +20,17 @@ public class ProductServices
 		this.productRepository.save(p);
 	}
 
-
 	//getAll products
 	public List<Product> getAllProducts()
 	{
-		List<Product> products=(List<Product>)this.productRepository.findAll();
-		return products;
+		return (List<Product>)this.productRepository.findAll();
 	}
 
 	//get Single Product
 	public Product getProduct(int id)
 	{
 		Optional<Product> optional = this.productRepository.findById(id);
-		Product product=optional.get();
-		return product;
+		return optional.get();
 	}
 
 	//update Product
@@ -57,13 +54,7 @@ public class ProductServices
 	//Get Product By Name
 	public Product getProductByName(String name)
 	{
-		
 		Product product= this.productRepository.findByPname(name);
-		if(product!=null)
-		{
-			return product;
-		}
-		return null;
-	
+		return product != null ? product : null;
 	}
 }
