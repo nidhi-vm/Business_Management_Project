@@ -1,4 +1,4 @@
-package com.business.loginCredentials;
+package com.business.logincredentials;
 
 public class AdminLogin
 {
