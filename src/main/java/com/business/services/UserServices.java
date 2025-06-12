@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.business.entities.Admin;
 import com.business.entities.User;
 import com.business.repositories.UserRepository;
+
 @Component
 public class UserServices 
 {
@@ -18,30 +18,26 @@ public class UserServices
 	//Get All Users
 	public List<User> getAllUser()
 	{
-		List<User> users = (List<User>) this.userRepository.findAll();
-		return users;
+		return (List<User>) this.userRepository.findAll();
 	}
 	
 	//Get Single User
 	public User getUser(int id)
 	{
-		Optional<User> optional = this.userRepository.findById(id);
-		User user = optional.get();
-		return user;
+		return this.userRepository.findById(id).orElse(null);
 	}
 	
 	//Get Single User By Email
 	public User getUserByEmail(String email)
 	{
-	 User user=	this.userRepository.findUserByUemail(email);
-	 return user;
+		return this.userRepository.findUserByUemail(email);
 	}
 	
 	//Update
 	public void updateUser(User user,int id)
 	{
 		user.setU_id(id);
-		 this.userRepository.save(user);
+		this.userRepository.save(user);
 	}
 	
 	//delete single User
@@ -53,22 +49,18 @@ public class UserServices
 	//Add User
 	public void addUser(User user)
 	{
-	this.userRepository.save(user);
+		this.userRepository.save(user);
 	}
 	
 	public boolean validateLoginCredentials(String email,String password)
 	{
-		List<User> users = (List<User>) this.userRepository.findAll();
-		for(User u:users)
+		for(User u : this.userRepository.findAll())
 		{
-		if(u!=null && u.getUpassword().equals(password) && u.getUemail().equals(email))
-		{
-			return true;
-		}
+			if(u != null && u.getUpassword().equals(password) && u.getUemail().equals(email))
+			{
+				return true;
+			}
 		}
 		return false;
 	}
-	
-	
-
 }
