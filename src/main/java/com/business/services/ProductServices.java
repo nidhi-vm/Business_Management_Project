@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.business.entities.Product;
 import com.business.repositories.ProductRepository;
+
 @Component
 public class ProductServices 
 {
@@ -20,30 +21,27 @@ public class ProductServices
 		this.productRepository.save(p);
 	}
 
-
 	//getAll products
 	public List<Product> getAllProducts()
 	{
-		List<Product> products=(List<Product>)this.productRepository.findAll();
-		return products;
+		return (List<Product>) this.productRepository.findAll();
 	}
 
 	//get Single Product
 	public Product getProduct(int id)
 	{
 		Optional<Product> optional = this.productRepository.findById(id);
-		Product product=optional.get();
-		return product;
+		return optional.get();
 	}
 
 	//update Product
-	public void updateproduct(Product p,int id)
+	public void updateproduct(Product p, int id)
 	{
 		p.setPid(id);
 		Optional<Product> optional = this.productRepository.findById(id);
-		Product prod=optional.get();
+		Product prod = optional.get();
 
-		if(prod.getPid()==id)
+		if (prod.getPid() == id)
 		{
 			this.productRepository.save(p);				
 		}
@@ -57,13 +55,7 @@ public class ProductServices
 	//Get Product By Name
 	public Product getProductByName(String name)
 	{
-		
-		Product product= this.productRepository.findByPname(name);
-		if(product!=null)
-		{
-			return product;
-		}
-		return null;
-	
+		Product product = this.productRepository.findByPname(name);
+		return product != null ? product : null;
 	}
 }
