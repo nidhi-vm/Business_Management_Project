@@ -26,8 +26,6 @@ input {
 	position: relative;
 	left: 0px;
 	top: 0px;
-
-
 }
 
 input:hover {
@@ -41,7 +39,6 @@ input:hover {
 }
 
 .admin {
-
 	background: linear-gradient(to right, white, rgb(197, 238, 197));
 	width: 50%;
 }
@@ -67,7 +64,6 @@ strong {
 	color: antiquewhite;
 	font-family: sans-serif;
 	border-radius: 3px;
-	
 }
 
 .loginButton {
@@ -90,9 +86,6 @@ strong {
 }
 
 .admin h2,
-.user h2
- {
-	/*position: relative;
-	left: 50px;*/
+.user h2 {
 	margin-top: 5px;
 }
