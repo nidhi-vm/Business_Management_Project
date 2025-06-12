@@ -8,6 +8,6 @@ class BusinessProjectApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// This method is intentionally left empty to verify that the application context loads successfully.
 	}
-
 }
