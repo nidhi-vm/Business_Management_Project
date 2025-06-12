@@ -18,8 +18,7 @@ public class OrderServices
 	//get all orders
 	public List<Orders> getOrders()
 	{
-		List<Orders> list=this.orderRepository.findAll();
-		return list;
+		return this.orderRepository.findAll();
 	}
 	//save Order
 	public void saveOrder(Orders order)
@@ -32,7 +31,6 @@ public class OrderServices
 	{
 		order.setoId(id);
 		this.orderRepository.save(order);
-		 
 	}
 	
 	//delete order
