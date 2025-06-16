@@ -13,11 +13,11 @@
 		<h3 style="color: red;">ADD NEW USER/CUSTOMER</h3>
 		<form action="" th:action="@{/addingUser}" method="post">
 			<label for="name">User_Name :</label>
-			<input type="text" name="uname" />
-			<label for="email" />User_Email :
-			<input type="email" name="uemail" />
+			<input type="text" name="uname" id="name" />
+			<label for="email">User_Email :</label>
+			<input type="email" name="uemail" id="email" />
 			<label for="telephone">User_Number :</label>
-			<input type="tel" name="unumber" pattern="[0-9]{10}"/>
+			<input type="tel" name="unumber" pattern="[0-9]{10}" id="telephone"/>
 			<input type="hidden" name="upassword" value="2330" />
 		</form>
 		<button type="submit">Add_User</button>
