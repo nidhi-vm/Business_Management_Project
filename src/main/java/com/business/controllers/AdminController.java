@@ -28,190 +28,170 @@ import com.business.services.ProductServices;
 import com.business.services.UserServices;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class AdminController {
-	@Autowired
-	private UserServices services;
-	@Autowired
-	private AdminServices adminServices;
-	@Autowired
-	private ProductServices productServices;	
-	@Autowired
-	private OrderServices orderServices;
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+    private static final String REDIRECT_ADMIN_SERVICES = "redirect:/admin/services";
+    private static final String LOGIN_VIEW = "Login";
+    private static final String BUY_PRODUCT_VIEW = "BuyProduct";
+    private static final String PRODUCT_UNAVAILABLE_MESSAGE = "SORRY...!  Product Unavailable";
+    private static final String PRODUCT_ATTRIBUTE = "product";
+    private static final String ORDERS_ATTRIBUTE = "orders";
+    private static final String NAME_ATTRIBUTE = "name";
 
-	private String email;
-	private User user;
+    @Autowired
+    private UserServices services;
+    @Autowired
+    private AdminServices adminServices;
+    @Autowired
+    private ProductServices productServices;    
+    @Autowired
+    private OrderServices orderServices;
 
-	// Validating login 
-	@GetMapping("/adminLogin")
-	public String  getAllData(  @ModelAttribute("adminLogin") AdminLogin login, Model model)
-	{
-		String email=login.getEmail();
-		String password=login.getPassword();
-		if(adminServices.validateAdminCredentials(email, password))
-		{
-			return "redirect:/admin/services";
-		}
-		else {
-			model.addAttribute("error", "Invalid email or password");
-			return "Login";
-		}
+    // Validating login 
+    @GetMapping("/adminLogin")
+    public String getAllData(@ModelAttribute("adminLogin") AdminLogin login, Model model) {
+        String email = login.getEmail();
+        String password = login.getPassword();
+        if (adminServices.validateAdminCredentials(email, password)) {
+            return REDIRECT_ADMIN_SERVICES;
+        } else {
+            model.addAttribute("error", "Invalid email or password");
+            return LOGIN_VIEW;
+        }
+    }
 
-	}
+    @GetMapping("/userlogin")
+    public String userLogin(@ModelAttribute("userLogin") UserLogin login, Model model) {
+        String email = login.getUserEmail();
+        String password = login.getUserPassword();
+        User user = this.services.getUserByEmail(email);
+        if (services.validateLoginCredentials(email, password)) {
+            List<Orders> orders = this.orderServices.getOrdersForUser(user);
+            model.addAttribute(ORDERS_ATTRIBUTE, orders);
+            model.addAttribute(NAME_ATTRIBUTE, user.getUname());
+            return BUY_PRODUCT_VIEW;
+        } else {
+            model.addAttribute("error2", "Invalid email or password");
+            return LOGIN_VIEW;
+        }
+    }
 
-	@GetMapping("/userlogin")
-	public String userLogin( @ModelAttribute("userLogin") UserLogin login,Model model)
-	{
+    // Searching Product By Name
+    @PostMapping("/product/search")
+    public String seachHandler(@RequestParam("productName") String name, Model model) {
+        Product product = this.productServices.getProductByName(name);
+        if (product == null) {
+            model.addAttribute("message", PRODUCT_UNAVAILABLE_MESSAGE);
+            model.addAttribute(PRODUCT_ATTRIBUTE, product);
+            return BUY_PRODUCT_VIEW;
+        }
+        User user = this.services.getUserByEmail(product.getUserEmail());
+        List<Orders> orders = this.orderServices.getOrdersForUser(user);
+        model.addAttribute(ORDERS_ATTRIBUTE, orders);
+        model.addAttribute(PRODUCT_ATTRIBUTE, product);
+        return BUY_PRODUCT_VIEW;
+    }
 
-		email=login.getUserEmail();
-		String password=login.getUserPassword();
-		if(services.validateLoginCredentials(email, password))
-		{
-			user = this.services.getUserByEmail(email);
-			List<Orders> orders = this.orderServices.getOrdersForUser(user);
-			model.addAttribute("orders", orders);
-			model.addAttribute("name", user.getUname());
-			return "BuyProduct";
-		}
-		else
-		{
-			model.addAttribute("error2", "Invalid email or password");
-			return "Login";
-		}
+    // Providing services 
+    @GetMapping("/admin/services")
+    public String returnBack(Model model) {
+        List<User> users = this.services.getAllUser();
+        List<Admin> admins = this.adminServices.getAll(); 
+        List<Product> products = this.productServices.getAllProducts();
+        List<Orders> orders = this.orderServices.getOrders();
+        model.addAttribute("users", users);
+        model.addAttribute("admins", admins);
+        model.addAttribute("products", products);
+        model.addAttribute(ORDERS_ATTRIBUTE, orders);
 
-	}
-	//Searching Product By Name
-	@PostMapping("/product/search")
-	public String seachHandler(@RequestParam("productName") String name,Model model)
-	{
+        return "Admin_Page";
+    }
 
-		Product product=this.productServices.getProductByName(name);
-		if(product==null)
-		{
-			model.addAttribute("message", "SORRY...!  Product Unavailable");
-			model.addAttribute("product", product);
-			List<Orders> orders = this.orderServices.getOrdersForUser(user);
-			model.addAttribute("orders", orders);
-			return "BuyProduct";
-		}
-		List<Orders> orders = this.orderServices.getOrdersForUser(user);
-		model.addAttribute("orders", orders);
-		model.addAttribute("product", product);
-		return "BuyProduct";
+    // Invoking addAdmin Page
+    @GetMapping("/addAdmin")
+    public String addAdminPage() {
+        return "Add_Admin";
+    }
 
-	}
+    // Handling AddAdmin
+    @PostMapping("addingAdmin")
+    public String addAdmin(@ModelAttribute Admin admin) {
+        this.adminServices.addAdmin(admin);
+        return REDIRECT_ADMIN_SERVICES;
+    }
 
-	//Providing services 
-	@GetMapping("/admin/services")
-	public String returnBack(Model model)
-	{
-		List<User> users= this.services.getAllUser();
-		List<Admin>admins=this.adminServices.getAll(); 
-		List<Product>products=this.productServices.getAllProducts();
-		List<Orders> orders = this.orderServices.getOrders();
-		model.addAttribute("users",users);
-		model.addAttribute("admins", admins);
-		model.addAttribute("products", products);
-		model.addAttribute("orders", orders);
+    // Invoking updateAdmin Page
+    @GetMapping("/updateAdmin/{adminId}")
+    public String update(@PathVariable("adminId") int id, Model model) {
+        Admin admin = this.adminServices.getAdmin(id);
+        model.addAttribute("admin", admin);
+        return "Update_Admin";
+    }
 
-		return "Admin_Page";
-	}
+    // Handling Update Page
+    @GetMapping("/updatingAdmin/{id}")
+    public String updateAdmin(@ModelAttribute Admin admin, @PathVariable("id") int id) {
+        this.adminServices.update(admin, id);
+        return REDIRECT_ADMIN_SERVICES;
+    }
 
-	//Invoking addAdmin Page
-	@GetMapping("/addAdmin")
-	public String addAdminPage()
-	{
-		return "Add_Admin";
-	}
+    // Handling delete operation
+    @GetMapping("/deleteAdmin/{id}")
+    public String deleteAdmin(@PathVariable("id") int id) {
+        this.adminServices.delete(id);
+        return REDIRECT_ADMIN_SERVICES;
+    }
 
-	//Handling AddAdmin
-	@PostMapping("addingAdmin")
-	public String addAdmin( @ModelAttribute Admin admin)
-	{
+    // Invoking AddProduct Page
+    @GetMapping("/addProduct")
+    public String addProduct() {
+        return "Add_Product";
+    }
 
-		this.adminServices.addAdmin(admin);
-		return "redirect:/admin/services";
+    // Invoking Update Product Page
+    @GetMapping("/updateProduct/{productId}")
+    public String updateProduct(@PathVariable("productId") int id, Model model) {
+        Product product = this.productServices.getProduct(id);
+        logger.info("Product: {}", product);
+        model.addAttribute(PRODUCT_ATTRIBUTE, product);
+        return "Update_Product";
+    }
 
-	}
+    // Invoking AddUser Page
+    @GetMapping("/addUser")
+    public String addUser() {
+        return "Add_User";
+    }
 
-	//invoking updateAdmin Page
-	@GetMapping("/updateAdmin/{adminId}")
-	public String update(@PathVariable("adminId") int id,Model model)
-	{
-		Admin admin = this.adminServices.getAdmin(id);
-		model.addAttribute("admin", admin);
-		return "Update_Admin";
-	}
+    // Invoking UpdateUser Page
+    @GetMapping("/updateUser/{userId}")
+    public String updateUserPage(@PathVariable("userId") int id, Model model) {
+        User user = this.services.getUser(id);
+        model.addAttribute("user", user);
+        return "Update_User";
+    }
 
-	//Handling Update Page
-	@GetMapping("/updatingAdmin/{id}")
-	public String updateAdmin(@ModelAttribute Admin admin,@PathVariable("id") int id)
-	{
-		this.adminServices.update(admin, id);
-		return "redirect:/admin/services";
-	}
+    // Placing Order
+    @PostMapping("/product/order")
+    public String orderHandler(@ModelAttribute() Orders order, Model model) {
+        double totalAmount = Logic.countTotal(order.getoPrice(), order.getoQuantity());
+        order.setTotalAmmout(totalAmount);
+        Date d = new Date();
+        order.setOrderDate(d);
+        this.orderServices.saveOrder(order);
+        model.addAttribute("amount", totalAmount);
+        return "Order_success";
+    }
 
-	//IHandling delete operation
-	@GetMapping("/deleteAdmin/{id}")
-	public String deleteAdmin(@PathVariable("id") int id)
-	{
-		this.adminServices.delete(id);
-		return "redirect:/admin/services";
-	}
-
-	//Invoking AddProduct Page
-	@GetMapping("/addProduct")
-	public String addProduct()
-	{
-		return "Add_Product";
-	}
-
-	//Invoking Update Product Page
-	@GetMapping("/updateProduct/{productId}")
-	public String updateProduct(@PathVariable("productId") int id,Model model)
-	{
-		Product product=this.productServices.getProduct(id);
-		System.out.println(product);
-		model.addAttribute("product", product);
-		return "Update_Product";
-	}
-
-	//Invoking AddUser Page
-	@GetMapping("/addUser")
-	public String addUser()
-	{
-		return "Add_User";
-	}
-
-	//Invoking UpdateUser Page
-	@GetMapping("/updateUser/{userId}")
-	public String updateUserPage(@PathVariable("userId") int id,Model model)
-	{
-		User user = this.services.getUser(id);
-		model.addAttribute("user", user);
-		return "Update_User";
-	}
-	//Placing  Order
-	@PostMapping("/product/order")
-	public String orderHandler(@ModelAttribute() Orders order,Model model)
-	{
-		double  totalAmount = Logic.countTotal(order.getoPrice(),order.getoQuantity());
-		order.setTotalAmmout(totalAmount);
-		order.setUser(user);
-		Date d=new Date();
-		order.setOrderDate(d);
-		this.orderServices.saveOrder(order);
-		model.addAttribute("amount",totalAmount);
-		return "Order_success";
-	}
-
-	@GetMapping("/product/back")
-	public String back(Model model)
-	{
-		List<Orders> orders = this.orderServices.getOrdersForUser(user);
-		model.addAttribute("orders", orders);
-		return "BuyProduct";
-	}
-
+    @GetMapping("/product/back")
+    public String back(Model model) {
+        User user = this.services.getUserByEmail(user.getEmail());
+        List<Orders> orders = this.orderServices.getOrdersForUser(user);
+        model.addAttribute(ORDERS_ATTRIBUTE, orders);
+        return BUY_PRODUCT_VIEW;
+    }
 }
