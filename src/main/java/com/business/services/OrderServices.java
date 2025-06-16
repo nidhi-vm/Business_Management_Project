@@ -1,7 +1,6 @@
 package com.business.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.business.entities.Orders;
 import com.business.entities.User;
 import com.business.repositories.OrderRepository;
+
 @Component
 public class OrderServices
 {
@@ -18,8 +18,7 @@ public class OrderServices
 	//get all orders
 	public List<Orders> getOrders()
 	{
-		List<Orders> list=this.orderRepository.findAll();
-		return list;
+		return this.orderRepository.findAll();
 	}
 	//save Order
 	public void saveOrder(Orders order)
@@ -28,11 +27,10 @@ public class OrderServices
 	}
 	
 	//update order
-	public void updateOrder(int id,Orders order)
+	public void updateOrder(int id, Orders order)
 	{
 		order.setoId(id);
 		this.orderRepository.save(order);
-		 
 	}
 	
 	//delete order
@@ -44,7 +42,6 @@ public class OrderServices
 	//get Order history of user
 	public List<Orders> getOrdersForUser(User user)
 	{
-	 return  this.orderRepository.findOrdersByUser(user);
+		return this.orderRepository.findOrdersByUser(user);
 	}
-	
 }
