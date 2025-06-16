@@ -40,8 +40,6 @@
 		display: block;
 		padding: 5px;
 		font-size: 16px;
-		
-
 	}
 
 	a {
@@ -53,37 +51,30 @@
 		width: 50px;
 		position: fixed;
 	}
-	.details th{
+	.details th {
 		background-color: dimgray;
 		font-family: sans-serif;
 		padding: 10px;
 		border: none;
-	
 	}
-	td{
+	td {
 		text-align: center;
 		border-bottom: 1px solid lightslategrey;
 	}
-	.welcome marquee,.welcome span
-	{
-		
+	.welcome span {
 		width: 50%;
 		font-size: 20px;
 		font-family: sans-serif;
 		color: lavender;
 	}
-	
 </style>
 
 <body>
 	<div class="welcome">
-			<marquee direction="right"  behaviour="slide" 
-			scrollamount="15" loop="1">Welcome Back <span  th:text="${name}"></span>
-			</marquee><br />
+		Welcome Back <span th:text="${name}"></span><br />
 	</div>
 	
 	<a href="/login">Back</a>
-	<center>
 
 		<form action="" th:action="@{/product/search}" method="post" class="searchInput">
 			<h1>Product Search :</h1>
@@ -107,9 +98,8 @@
 		
 		<div th:if="${orders!=null}" class="details">
 			<h2>Your Orders :</h2>
-			<table >
+			<table>
 				<tr>
-	
 					<th>Product_Name</th>
 					<th>Product_Price</th>
 					<th>Product_Quantity</th>
@@ -122,7 +112,6 @@
 					<td th:text="${order.oQuantity}"></td>
 					<td th:text="${order.totalAmmout}"></td>
 					<td th:text="${order.orderDate}"></td>
-
 				</tr>
 			</table>
 		</div>
