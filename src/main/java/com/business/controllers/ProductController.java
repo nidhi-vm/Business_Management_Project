@@ -20,29 +20,29 @@ public class ProductController
 	@Autowired
 	private ProductServices productServices;
 
+	private static final String REDIRECT_SERVICES = "redirect:/admin/services";
+
 	//	AddProduct
 	@PostMapping("/addingProduct")
 	public String addProduct(@ModelAttribute Product product)
 	{
-
 		this.productServices.addProduct(product);
-		return "redirect:/admin/services";
+		return REDIRECT_SERVICES;
 	}
 
 	//	UpdateProduct
 	@GetMapping("/updatingProduct/{productId}")
 	public String updateProduct(@ModelAttribute Product product,@PathVariable("productId") int id)
 	{
-
 		this.productServices.updateproduct(product, id);
-		return "redirect:/admin/services";
+		return REDIRECT_SERVICES;
 	}
 	//DeleteProduct
 	@GetMapping("/deleteProduct/{productId}")
 	public String delete(@PathVariable("productId") int id)
 	{
 		this.productServices.deleteProduct(id);
-		return "redirect:/admin/services";
+		return REDIRECT_SERVICES;
 	}
 	
 }
