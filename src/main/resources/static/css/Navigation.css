@@ -3,13 +3,12 @@ body,
 ul {
     margin: 0;
     padding: 0;
-  /*  overflow: hidden;*/
 }
 
 nav {
     background-color: #333;
     color: white;
-    position:sticky;
+    position: sticky;
     z-index: 1;
     top: 0px;
 }
@@ -17,7 +16,7 @@ nav {
 ul {
     list-style-type: none;
     display: flex;
-    justify-content: space-between ;
+    justify-content: space-between;
     align-items: center;
     padding: 5px;
 }
@@ -30,12 +29,11 @@ a {
     text-decoration: none;
     color: white;
     font-weight: bold;
-    /* transition: color 0.3s; */
     font-size: 20px;
 }
 
 a:hover {
-    color: #66ccff ;
+    color: #66ccff;
     transition: 0.3s;
 }
 
@@ -44,10 +42,10 @@ a:hover {
     width: 70px;
     border-radius: 50%;
 }
-button
-{
+
+button {
     color: red;
     border: none;
     font-size: 20px;
-   background-color: transparent;
+    background-color: transparent;
 }
