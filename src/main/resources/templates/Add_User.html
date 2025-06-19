@@ -14,13 +14,13 @@
 		<form action="" th:action="@{/addingUser}" method="post">
 			<label for="name">User_Name :</label>
 			<input type="text" name="uname" />
-			<label for="email" />User_Email :
+			<label for="email">User_Email :</label>
 			<input type="email" name="uemail" />
 			<label for="telephone">User_Number :</label>
 			<input type="tel" name="unumber" pattern="[0-9]{10}"/>
 			<input type="hidden" name="upassword" value="2330" />
+			<button type="submit">Add_User</button>
 		</form>
-		<button type="submit">Add_User</button>
 	</div>
 </body>
 
