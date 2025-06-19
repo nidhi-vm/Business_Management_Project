@@ -18,7 +18,7 @@ public class User
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int u_id;
+	private int userId;
 
 	private String uname;
 	private String uemail;
@@ -35,11 +35,11 @@ public class User
 	public void setOrders(List<Orders> orders) {
 		this.orders = orders;
 	}
-	public int getU_id() {
-		return u_id;
+	public int getUserId() {
+		return userId;
 	}
-	public void setU_id(int u_id) {
-		this.u_id = u_id;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	public String getUname() {
 		return uname;
@@ -68,11 +68,7 @@ public class User
 	}
 	@Override
 	public String toString() {
-		return "User [u_id=" + u_id + ", uname=" + uname + ", uemail=" + uemail + ", upassword=" + upassword
+		return "User [userId=" + userId + ", uname=" + uname + ", uemail=" + uemail + ", upassword=" + upassword
 				+ ", unumber=" + unumber + ", orders=" + orders + "]";
 	}
-	
-
-
-
 }
