@@ -40,15 +40,12 @@ public class AdminController {
 	@Autowired
 	private OrderServices orderServices;
 
-	private String email;
-	private User user;
-
 	// Validating login 
 	@GetMapping("/adminLogin")
-	public String  getAllData(  @ModelAttribute("adminLogin") AdminLogin login, Model model)
+	public String getAllData(@ModelAttribute("adminLogin") AdminLogin login, Model model)
 	{
-		String email=login.getEmail();
-		String password=login.getPassword();
+		String email = login.getEmail();
+		String password = login.getPassword();
 		if(adminServices.validateAdminCredentials(email, password))
 		{
 			return "redirect:/admin/services";
@@ -57,18 +54,16 @@ public class AdminController {
 			model.addAttribute("error", "Invalid email or password");
 			return "Login";
 		}
-
 	}
 
 	@GetMapping("/userlogin")
-	public String userLogin( @ModelAttribute("userLogin") UserLogin login,Model model)
+	public String userLogin(@ModelAttribute("userLogin") UserLogin login, Model model)
 	{
-
-		email=login.getUserEmail();
-		String password=login.getUserPassword();
+		String email = login.getUserEmail();
+		String password = login.getUserPassword();
 		if(services.validateLoginCredentials(email, password))
 		{
-			user = this.services.getUserByEmail(email);
+			User user = this.services.getUserByEmail(email);
 			List<Orders> orders = this.orderServices.getOrdersForUser(user);
 			model.addAttribute("orders", orders);
 			model.addAttribute("name", user.getUname());
@@ -79,38 +74,33 @@ public class AdminController {
 			model.addAttribute("error2", "Invalid email or password");
 			return "Login";
 		}
-
 	}
 	//Searching Product By Name
 	@PostMapping("/product/search")
-	public String seachHandler(@RequestParam("productName") String name,Model model)
+	public String seachHandler(@RequestParam("productName") String name, Model model)
 	{
-
-		Product product=this.productServices.getProductByName(name);
-		if(product==null)
+		Product product = this.productServices.getProductByName(name);
+		if(product == null)
 		{
 			model.addAttribute("message", "SORRY...!  Product Unavailable");
 			model.addAttribute("product", product);
-			List<Orders> orders = this.orderServices.getOrdersForUser(user);
-			model.addAttribute("orders", orders);
 			return "BuyProduct";
 		}
 		List<Orders> orders = this.orderServices.getOrdersForUser(user);
 		model.addAttribute("orders", orders);
 		model.addAttribute("product", product);
 		return "BuyProduct";
-
 	}
 
 	//Providing services 
 	@GetMapping("/admin/services")
 	public String returnBack(Model model)
 	{
-		List<User> users= this.services.getAllUser();
-		List<Admin>admins=this.adminServices.getAll(); 
-		List<Product>products=this.productServices.getAllProducts();
+		List<User> users = this.services.getAllUser();
+		List<Admin> admins = this.adminServices.getAll(); 
+		List<Product> products = this.productServices.getAllProducts();
 		List<Orders> orders = this.orderServices.getOrders();
-		model.addAttribute("users",users);
+		model.addAttribute("users", users);
 		model.addAttribute("admins", admins);
 		model.addAttribute("products", products);
 		model.addAttribute("orders", orders);
@@ -127,17 +117,15 @@ public class AdminController {
 
 	//Handling AddAdmin
 	@PostMapping("addingAdmin")
-	public String addAdmin( @ModelAttribute Admin admin)
+	public String addAdmin(@ModelAttribute Admin admin)
 	{
-
 		this.adminServices.addAdmin(admin);
 		return "redirect:/admin/services";
-
 	}
 
 	//invoking updateAdmin Page
 	@GetMapping("/updateAdmin/{adminId}")
-	public String update(@PathVariable("adminId") int id,Model model)
+	public String update(@PathVariable("adminId") int id, Model model)
 	{
 		Admin admin = this.adminServices.getAdmin(id);
 		model.addAttribute("admin", admin);
@@ -146,13 +134,13 @@ public class AdminController {
 
 	//Handling Update Page
 	@GetMapping("/updatingAdmin/{id}")
-	public String updateAdmin(@ModelAttribute Admin admin,@PathVariable("id") int id)
+	public String updateAdmin(@ModelAttribute Admin admin, @PathVariable("id") int id)
 	{
 		this.adminServices.update(admin, id);
 		return "redirect:/admin/services";
 	}
 
-	//IHandling delete operation
+	//Handling delete operation
 	@GetMapping("/deleteAdmin/{id}")
 	public String deleteAdmin(@PathVariable("id") int id)
 	{
@@ -169,10 +157,9 @@ public class AdminController {
 
 	//Invoking Update Product Page
 	@GetMapping("/updateProduct/{productId}")
-	public String updateProduct(@PathVariable("productId") int id,Model model)
+	public String updateProduct(@PathVariable("productId") int id, Model model)
 	{
-		Product product=this.productServices.getProduct(id);
-		System.out.println(product);
+		Product product = this.productServices.getProduct(id);
 		model.addAttribute("product", product);
 		return "Update_Product";
 	}
@@ -186,23 +173,23 @@ public class AdminController {
 
 	//Invoking UpdateUser Page
 	@GetMapping("/updateUser/{userId}")
-	public String updateUserPage(@PathVariable("userId") int id,Model model)
+	public String updateUserPage(@PathVariable("userId") int id, Model model)
 	{
 		User user = this.services.getUser(id);
 		model.addAttribute("user", user);
 		return "Update_User";
 	}
-	//Placing  Order
+	//Placing Order
 	@PostMapping("/product/order")
-	public String orderHandler(@ModelAttribute() Orders order,Model model)
+	public String orderHandler(@ModelAttribute() Orders order, Model model)
 	{
-		double  totalAmount = Logic.countTotal(order.getoPrice(),order.getoQuantity());
+		double totalAmount = Logic.countTotal(order.getoPrice(), order.getoQuantity());
 		order.setTotalAmmout(totalAmount);
 		order.setUser(user);
-		Date d=new Date();
+		Date d = new Date();
 		order.setOrderDate(d);
 		this.orderServices.saveOrder(order);
-		model.addAttribute("amount",totalAmount);
+		model.addAttribute("amount", totalAmount);
 		return "Order_success";
 	}
 
@@ -213,5 +200,4 @@ public class AdminController {
 		model.addAttribute("orders", orders);
 		return "BuyProduct";
 	}
-
 }
